@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Monitor</title>
+  <link href="output.css" rel="stylesheet">
+  <link rel="shortcut icon" href="dashboard.png" type="image/x-icon">
+</head>
+
+<body class="bg-gray-100 text-gray-900">
+  <div class="container mx-auto p-4 lg:px-40 lg:py-12">
+    <h1 class="text-2xl font-bold mb-4">System Monitor</h1>
+    <div>
+      <ul class="flex border-b">
+        <li class="-mb-px mr-1">
+          <a class="bg-white inline-block border-l border-t border-r rounded-t py-2 px-4 text-blue-700 font-semibold"
+            href="#" data-tab="tab-cpu">CPU</a>
+        </li>
+        <li class="mr-1">
+          <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold" href="#"
+            data-tab="tab-memory">Memory</a>
+        </li>
+        <li class="mr-1">
+          <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold" href="#"
+            data-tab="tab-network">Network</a>
+        </li>
+        <li class="mr-1">
+          <a class="bg-white inline-block py-2 px-4 text-blue-500 hover:text-blue-800 font-semibold" href="#"
+            data-tab="tab-processes">Processes</a>
+        </li>
+      </ul>
+    </div>
+    <div id="tab-cpu" class="tab-content bg-white p-4 rounded shadow">
+      <h2 class="text-xl font-semibold mb-2">CPU</h2>
+      <canvas id="cpuChart"></canvas>
+      <h2 class="text-xl font-semibold mt-4 mb-2">CPU Load Per Core</h2>
+      <canvas id="cpuPerCoreChart"></canvas>
+      <h2 class="text-xl font-semibold mt-4 mb-2">CPU Speed</h2>
+      <canvas id="cpuSpeedChart"></canvas>
+    </div>
+    <div id="tab-memory" class="tab-content bg-white p-4 rounded shadow hidden">
+      <h2 class="text-xl font-semibold mb-2">Memory</h2>
+      <canvas id="memoryChart"></canvas>
+      <h2 class="text-xl font-semibold mt-4 mb-2">Memory Usage (%)</h2>
+      <canvas id="memoryUsageChart"></canvas>
+    </div>
+    <div id="tab-network" class="tab-content bg-white p-4 rounded shadow hidden">
+      <h2 class="text-xl font-semibold mb-2">Network</h2>
+      <canvas id="networkChart"></canvas>
+    </div>
+    <div id="tab-processes" class="tab-content bg-white p-4 rounded shadow hidden">
+      <h2 class="text-xl font-semibold mb-2">Top 10 Processes</h2>
+      <table class="min-w-full bg-white">
+        <thead>
+          <tr>
+            <th class="border px-4 py-2">Name</th>
+            <th class="border px-4 py-2">PID</th>
+            <th class="border px-4 py-2">CPU Usage</th>
+            <th class="border px-4 py-2">Memory Usage</th>
+          </tr>
+        </thead>
+        <tbody id="processTableBody">
+          <!-- Process rows will be inserted here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script src="renderer.js"></script>
+</body>
+
+</html>

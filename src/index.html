@@ -34,6 +34,7 @@
     </div>
     <div id="tab-cpu" class="tab-content bg-white p-4 rounded shadow">
       <h2 class="text-xl font-semibold mb-2">CPU</h2>
+      <div id="cpuHardwareInfo" class="mb-4"></div>
       <canvas id="cpuChart"></canvas>
       <h2 class="text-xl font-semibold mt-4 mb-2">CPU Load Per Core</h2>
       <canvas id="cpuPerCoreChart"></canvas>
@@ -42,16 +43,19 @@
     </div>
     <div id="tab-memory" class="tab-content bg-white p-4 rounded shadow hidden">
       <h2 class="text-xl font-semibold mb-2">Memory</h2>
-      <canvas id="memoryChart"></canvas>
+      <div id="memoryHardwareInfo" class="mb-4"></div>
+      <canvas id="memoryChart" class="p-10"></canvas>
       <h2 class="text-xl font-semibold mt-4 mb-2">Memory Usage (%)</h2>
       <canvas id="memoryUsageChart"></canvas>
     </div>
     <div id="tab-network" class="tab-content bg-white p-4 rounded shadow hidden">
       <h2 class="text-xl font-semibold mb-2">Network</h2>
+      <div id="networkHardwareInfo" class="mb-4"></div>
       <canvas id="networkChart"></canvas>
     </div>
     <div id="tab-processes" class="tab-content bg-white p-4 rounded shadow hidden">
       <h2 class="text-xl font-semibold mb-2">Top 10 Processes</h2>
+      <div id="processesHardwareInfo" class="mb-4"></div>
       <table class="min-w-full bg-white">
         <thead>
           <tr>

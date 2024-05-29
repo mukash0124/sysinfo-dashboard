@@ -4,12 +4,12 @@ const Chart = require("chart.js/auto");
 let cpuData = [];
 let cpuCoreData = [];
 let cpuSpeedData = [];
-let memoryData = [];
+let memoryData = [0, 0];
 let memoryUsageData = [];
 let networkData = [];
 let labels = [];
 
-const updateInterval = 2000;
+const updateInterval = 1000;
 
 let cpuChart,
   cpuPerCoreChart,
@@ -49,10 +49,9 @@ async function fetchMetrics() {
 
   // Memory data
   const memoryUsed = metrics.memory.used / (1024 * 1024 * 1024); // Convert to GB
-  memoryData.push(memoryUsed);
-  if (memoryData.length > 10) {
-    memoryData.shift();
-  }
+  const memoryTotal = metrics.memory.total / (1024 * 1024 * 1024); // Convert to GB
+  memoryData[0] = memoryUsed;
+  memoryData[1] = memoryTotal - memoryUsed;
 
   const memoryUsage = (metrics.memory.used / metrics.memory.total) * 100;
   memoryUsageData.push(memoryUsage);
@@ -141,23 +140,27 @@ function createCharts() {
 
   const ctxMemory = document.getElementById("memoryChart").getContext("2d");
   memoryChart = new Chart(ctxMemory, {
-    type: "line",
+    type: "doughnut",
     data: {
-      labels: labels,
+      labels: ["Used Memory (GB)", "Free Memory (GB)"],
       datasets: [
         {
-          label: "Memory Usage (GB)",
           data: memoryData,
-          backgroundColor: "rgba(255, 99, 132, 0.2)",
-          borderColor: "rgba(255, 99, 132, 1)",
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+          ],
+          borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
           borderWidth: 1,
         },
       ],
     },
     options: {
-      scales: {
-        y: {
-          beginAtZero: true,
+      cutout: "50%",
+      plugins: {
+        legend: {
+          display: true,
+          position: "bottom",
         },
       },
     },
@@ -278,15 +281,43 @@ function switchTab(event) {
   );
 }
 
+async function fetchHardwareInfo() {
+  const hardwareInfo = await ipcRenderer.invoke("get-hardware-info");
+
+  document.getElementById("cpuHardwareInfo").innerHTML = `
+    <p>Model: ${
+      hardwareInfo.cpu.manufacturer + " " + hardwareInfo.cpu.brand
+    }</p>
+    <p>Cores: ${hardwareInfo.cpu.cores}</p>
+    <p>Speed: ${hardwareInfo.cpu.speed} GHz</p>
+  `;
+
+  document.getElementById("memoryHardwareInfo").innerHTML = `
+    <p>Total Memory: ${(
+      hardwareInfo.memory.total /
+      (1024 * 1024 * 1024)
+    ).toFixed(2)} GB</p>
+  `;
+
+  document.getElementById("networkHardwareInfo").innerHTML = `
+    <p>Wifi name: ${hardwareInfo.network[0].ssid}</p>
+  `;
+
+  document.getElementById("processesHardwareInfo").innerHTML = `
+    <p>Operating System: ${hardwareInfo.os.platform} ${hardwareInfo.os.distro}</p>
+  `;
+}
+
 window.onload = () => {
   createCharts();
+  fetchHardwareInfo();
   fetchMetrics();
   setInterval(fetchMetrics, updateInterval); // Update every second
   setInterval(() => {
     ipcRenderer.invoke("get-system-metrics").then((metrics) => {
       updateProcessTable(metrics.processes);
     });
-  }, updateInterval); // Update process table every 10 seconds
+  }, updateInterval);
 
   document.querySelectorAll(".border-b a").forEach((tabLink) => {
     tabLink.addEventListener("click", switchTab);
